@@ -1,3 +1,11 @@
+/********************************************
+author:
+  nike：freetoo
+  name: yigui-lu
+ wx/qq: 48092788
+e-mail: gcode@qq.com
+*********************************************/
+
 // service discovery plugin: etcd
 
 package etcd
