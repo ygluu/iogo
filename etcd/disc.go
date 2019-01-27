@@ -83,7 +83,7 @@ func (self *register) register() error {
 						log.Printf("iogo-etcd: set service '%s' with ttl to etcd3 failed: %s", self.serviceName, err.Error())
 					} else {
 						if self.isInline == false {
-							log.Printf("iogo-etcd: service register: name:%s addr: %s", self.serviceName, self.serviceValue)
+							log.Printf("iogo-etcd: service register: name:%s addr: %s to:%s", self.serviceName, self.serviceValue, self.owner.GetTarget())
 						}
 						self.isInline = true
 					}
@@ -95,7 +95,7 @@ func (self *register) register() error {
 					log.Printf("iogo-etcd: refresh service '%s' with ttl to etcd3 failed: %s", self.serviceName, err.Error())
 				} else {
 					if self.isInline == false {
-						log.Printf("iogo-etcd: service register: name:%s addr: %s", self.serviceName, self.serviceValue)
+						log.Printf("iogo-etcd: service register: name:%s addr: %s to:%s", self.serviceName, self.serviceValue, self.owner.GetTarget())
 					}
 					self.isInline = true
 				}
@@ -153,10 +153,15 @@ func (self *server) IsInline() bool {
 			return true
 		}
 	}
-	return false
+	client, err := etcd3.New(*self.conf)
+	if err != nil {
+		return false
+	}
+	_, err = client.Get(context.Background(), "iogo-test", etcd3.WithPrefix())
+	return err == nil
 }
 
-func (self *server) getTarget() string {
+func (self *server) GetTarget() string {
 	ret := ""
 	for _, s := range self.conf.Endpoints {
 		if ret == "" {
@@ -181,12 +186,14 @@ func NewServer(interval int, ttl int, conf *etcd3.Config) iogo.DiscServer {
 // client
 
 type client struct {
-	conf     *etcd3.Config
-	watchers []*watcher
-	isInline bool
+	conf          *etcd3.Config
+	watchers      []*watcher
+	countResolver int
+	isInline      bool
 }
 
 func (self *client) NewResolver(clusterName, serviceName string) interface{} {
+	self.countResolver++
 	return &resolver{clusterName: clusterName, serviceName: serviceName, owner: self}
 }
 
@@ -203,7 +210,7 @@ func (self *client) GetTarget() string {
 }
 
 func (self *client) IsInline() bool {
-	if len(self.watchers) == 0 {
+	if self.countResolver == 0 {
 		return true
 	}
 	return self.isInline
@@ -229,8 +236,6 @@ func (self *resolver) Resolve(target string) (naming.Watcher, error) {
 	if err != nil {
 		client = nil
 		log.Printf("iogo-etcd: Resolve: creat etcd3 client failed: %s\n", err.Error())
-	} else {
-		self.owner.isInline = true
 	}
 	ret := &watcher{re: self, clusterName: self.clusterName, owner: self.owner, client: client}
 	self.owner.watchers = append(self.owner.watchers, ret)
@@ -266,7 +271,6 @@ func (self *watcher) extractAddrs(resp *etcd3.GetResponse) []string {
 
 func (self *watcher) Next() ([]*naming.Update, error) {
 	prefix := fmt.Sprintf("/%s/services/%s/", self.clusterName, self.re.serviceName)
-
 	if !self.isInitialized {
 		if self.client == nil {
 			client, err := etcd3.New(*self.owner.conf)
@@ -274,11 +278,11 @@ func (self *watcher) Next() ([]*naming.Update, error) {
 				self.client = nil
 				return nil, fmt.Errorf("iogo-etcd: Next: creat etcd3 client failed: %s", err.Error())
 			}
-			self.owner.isInline = true
 			self.client = client
 		}
 		resp, err := self.client.Get(context.Background(), prefix, etcd3.WithPrefix())
 		if err == nil {
+			self.owner.isInline = true
 			self.isInitialized = true
 			addrs := self.extractAddrs(resp)
 			if l := len(addrs); l != 0 {

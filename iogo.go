@@ -32,6 +32,7 @@ type DiscServer interface {
 	Register(clusterName, serviceName, serviceAddr string) error
 	Unregister()
 	IsInline() bool
+	GetTarget() string
 }
 
 type DiscClient interface {

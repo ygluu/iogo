@@ -20,7 +20,7 @@ const (
 var (
 	ClusterName    string = "iogo-demo"
 	SvcName		   string = ""
-	SvcNameHello   string = "svc-Hello"
+	SvcNameHello   string = "svc-hello"
 	SvcAddr        string = ""
 	SvcCaFile      string = ""
 	SvcCertFile    string = ""
@@ -332,13 +332,13 @@ func init() {
 		log.Fatalf("iogo-app: NewConf:%v", err)
 	}
 	cliEtcd := etcd.NewClient(etcdConf)
-	iogo.NewClient(config.ClusterName, cliEtcd)
-	iogo.Start()
+	iogo.NewClient(config.ClusterName, cliEtcd)	
 
 	c := iogo.NewConnect(nil, config.SvcNameHello)
 	client.hello = proto.NewHelloClient(c)
 	// ...
 
+	iogo.Start()
 }
 
 `
@@ -367,6 +367,7 @@ func main() {
 			log.Printf("Reply: %s (falg:%d)\n", res.Text, res.Flag)
 		} else {
 			log.Println(err)
+			return
 		}
 	}
 }

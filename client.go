@@ -55,7 +55,7 @@ type grpcClient struct {
 }
 
 func (self *grpcClient) start() {
-	log.Printf("iogo: client: waitfor inline of service discovery")
+	log.Printf("iogo: client: waitfor inline of service discovery(%s)......\n", self.disc.GetTarget())
 	for {
 		if self.disc.IsInline() {
 			break
@@ -183,7 +183,7 @@ func NewConnectByAddr(ctx context.Context, Addr string, opts ...grpc.DialOption)
 
 func startCli() {
 	if client != nil {
-		log.Printf("iogo: client start...")
+		log.Printf("iogo: client start......")
 		client.start()
 	}
 }

@@ -51,6 +51,15 @@ type grpcServer struct {
 }
 
 func (self *grpcServer) start() {
+	log.Printf("iogo: server: waitfor inline of service discovery(%s)......\n", self.disc.GetTarget())
+	for {
+		if self.disc.IsInline() {
+			break
+		}
+		time.Sleep(1000)
+	}
+	log.Printf("iogo: server: service discovery inline")
+
 	lis, err := net.Listen("tcp", self.svcAddr)
 	if err != nil {
 		panic(err)
@@ -133,7 +142,7 @@ func NewServer(clusterName string, serviceName string, svcAddr string, disc Disc
 
 func startSvr() {
 	if server != nil {
-		log.Printf("iogo: server start...")
+		log.Printf("iogo: server start......")
 		server.start()
 	}
 }
