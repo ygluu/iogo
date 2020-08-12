@@ -2,7 +2,8 @@
 This is a microservice cluster framework supporting grpc and HTTP
 
 # contacts
- contacts: nike: freetoo name: yigui-lu(卢益贵)
+     nike: freetoo 
+     name: yigui-lu(卢益贵)
     wx/qq: 48092788
    e-mail: gcode@qq.com
 
