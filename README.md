@@ -1,9 +1,9 @@
 # iogo
-This is a very easy-to-use micro-service framework based on GRPC.
+This is a microservice cluster framework supporting grpc and HTTP
 
 # e-mail
 gcode@qq.com
 
 # readme
-https://blog.csdn.net/guestcode/article/details/86655540
+https://blog.csdn.net/guestcode/article/details/107953644
 
