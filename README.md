@@ -1,5 +1,6 @@
 # iogo
-This is a microservice cluster framework supporting grpc and HTTP
+This is a microservice cluster framework supporting GRPC and HTTP，and support JSON and protobuf serialization data, dynamic weight load balancing function, simple communication protocol definition.
+
 
 # contacts
      nike: freetoo 
