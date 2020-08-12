@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option objc_class_prefix = "HLW";
+
+package proto;
+
+
+message SayRequest {
+	string Text = 1;
+}
+
+message SayReply {
+	string Flag = 1;
+}

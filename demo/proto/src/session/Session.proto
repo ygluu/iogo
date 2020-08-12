@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option objc_class_prefix = "HLW";
+
+package proto;
+
+service Session {
+	rpc Login(LoginRequest) returns (LoginReply) {	
+	}
+}
+
+service Account {
+	rpc Login(stream  LoginRequest) returns (stream  LoginReply) {
+	}
+	rpc LoginA(LoginRequest) returns (stream  LoginReply) {
+	}
+	rpc LoginB(stream LoginRequest) returns (LoginReply) {
+	}
+	rpc LoginC(  LoginRequest) returns (  LoginReply) {
+	}
+}
+
+message LoginRequest {
+    string Name = 1;
+	string PassWord = 2;
+}
+
+message LoginReply {
+    int32 Flag = 1;
+	string token = 2;
+	int32 Lease = 3;
+	int32 Interval = 4;
+}
+
+message LogoutRequest {
+    string ID = 1;
+}
+
+message LogoutReply {
+    string Message = 1;
+}
+
+
