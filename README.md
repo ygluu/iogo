@@ -3,8 +3,7 @@ This is a microservice cluster framework supporting GRPC and HTTP，and support 
 
 
 # contacts
-      nike: freetoo 
-      name: yigui-lu(卢益贵)
+      name: Yigui Lu (卢益贵)
      wx/qq: 48092788
          
       
